@@ -1,0 +1,23 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+numpy = "*"
+pandas = "*"
+matplotlib = "*"
+seaborn = "*"
+ipykernel = "*"
+lxml = "*"
+html5lib = "*"
+beautifulsoup4 = "*"
+plotly-express = "*"
+nbformat = "*"
+python-dotenv = "*"
+kaleido = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.12"
