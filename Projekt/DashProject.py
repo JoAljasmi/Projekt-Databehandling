@@ -115,6 +115,25 @@ def update_sport(selected_sport):
     return output_text, age_distribution_figure, medal_distribution_figure, age_gender_distribution_figure, events_by_year_figure, sunburst_chart_figure
 
 
+# Alejandro Uppgift 1 graf
+
+# canada_gold = olympic_df.query("region=='Canada' & Medal =='Gold'")
+# events_by_year = canada_gold[["Event", "Year", "Sport", "Medal"]].groupby(["Event"], as_index=False).value_counts().sort_values(by=["Event", "Year"], ascending=[False, True])
+
+
+# title_defences = events_by_year[events_by_year['Event'].duplicated(keep=False)]
+# title_defences.loc[:,'difference'] = title_defences.groupby("Event", as_index=False)['Year'].diff()
+# title_defences.drop(title_defences[(title_defences['difference'] != 4)].index, inplace=True)
+# title_defences.drop(['count', "difference"], axis=1, inplace=True)
+# title_defences = title_defences.value_counts().reset_index().sort_values(by=["Event", "Year"], ascending=[True, True])
+
+
+# fig5 = px.bar(title_defences, x="Event", y="count", color="Year", labels=dict(count="Titelförsvar"), hover_data=dict(count=False, Event=True, Sport=False), title="År med guldmedaljer i följd")
+# fig5.update_layout(xaxis={'categoryorder':'total ascending'})
+
+# fig5.show()
+
+
 if __name__ == '__main__':
     app.run_server(debug=True)
     
