@@ -118,3 +118,4 @@ def update_sport(selected_sport):
 
 if __name__ == '__main__':
     app.run_server(debug=True)
+    
