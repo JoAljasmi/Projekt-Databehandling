@@ -3,7 +3,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
-import numpy as np
 import dash_bootstrap_components as dbc
 from dash_bootstrap_templates import load_figure_template
 
