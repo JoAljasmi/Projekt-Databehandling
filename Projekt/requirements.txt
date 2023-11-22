@@ -4,5 +4,5 @@ matplotlib==3.5.3
 seaborn==0.12.2
 plotly.express==0.4.1
 dash_bootstrap_components==1.5.0
-hashlib==20081119
 dash_bootstrap_templates==1.1.1
+hashlib==20081119
