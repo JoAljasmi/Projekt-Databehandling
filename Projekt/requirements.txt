@@ -2,7 +2,7 @@ dash==2.14.1
 pandas==2.1.2
 matplotlib==3.8.0
 seaborn==0.13.0
-plotly.express=0.4.1
+plotly.express==0.4.1
 dash_bootstrap_components==1.5.0
 hashlib==20081119
 dash_bootstrap_templates==1.1.1
