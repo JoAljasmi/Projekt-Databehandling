@@ -7,10 +7,29 @@ import dash_bootstrap_components as dbc
 import hashlib
 from dash_bootstrap_templates import load_figure_template
 
+
+def title_defences(df):
+    canada_gold = df.query("Medal =='Gold'")
+    events_by_year = canada_gold[["Event", "Year", "Sport", "Medal"]].groupby(["Event"], as_index=False).value_counts().sort_values(by=["Event", "Year"], ascending=[False, True])
+
+
+    title_defences = events_by_year[events_by_year['Event'].duplicated(keep=False)]
+    title_defences.loc[:,'difference'] = title_defences.groupby("Event", as_index=False)['Year'].diff()
+    title_defences.drop(title_defences[(title_defences['difference'] != 4)].index, inplace=True)
+    title_defences.drop(['count', "difference"], axis=1, inplace=True)
+    title_defences = title_defences.value_counts().reset_index().sort_values(by=["Event", "Year"], ascending=[True, True])
+
+
+    fig5 = px.bar(title_defences, x="Event", y="count", color="Year", labels=dict(count="Title defences"), hover_data=dict(count=False, Event=True, Sport=False), title="Successful title defences by sport")
+    fig5.update_layout(xaxis={'categoryorder':'total ascending'})
+
+    return fig5
+
+
 load_figure_template("flatly")
 
 # Loading the data
-athlete_events_df = pd.read_csv('../Data/athlete_events.csv')
+athlete_events_df = pd.read_csv('athlete_events.csv')
 
 #Hashlibing the names of the athletes
 athlete_events_df['Name'] = athlete_events_df['Name'].apply(lambda x: hashlib.sha256(x.encode()).hexdigest())
@@ -94,6 +113,9 @@ def update_sport(statistic_type, selected_sport):
         # Changing the wide variable 
         medal_distribution = medal_distribution.reset_index().melt(id_vars=["NOC"], value_vars=["Bronze", "Silver", "Gold"])
 
+
+
+
         # Age distribution in the sport
         age_distribution_figure = px.histogram(sport_df, x='Age', title='Age Distribution in ' + selected_sport, color='Age')
 
@@ -158,9 +180,14 @@ def update_sport(statistic_type, selected_sport):
                                             path=['Year', 'Medal', 'Sport'],
                                             title='Medal Distribution in Canada by Year and Sport',
                                             color='Medal')
+        
+        # Canadian title defences
+        title_defences_chart = title_defences(df_canada)
+        
 
         return [
             html.Div("Displaying data for Country Statistic"),
+            dcc.Graph(figure=title_defences_chart, id='title-defences-chart'),
             dcc.Graph(figure=fig_sports_canada, id='age-distribution'),
             dcc.Graph(figure=fig_year_canada, id='medal-distribution'),
             dcc.Graph(figure=fig_age_canada, id='age-gender-distribution'),
@@ -171,4 +198,4 @@ def update_sport(statistic_type, selected_sport):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=8052)
