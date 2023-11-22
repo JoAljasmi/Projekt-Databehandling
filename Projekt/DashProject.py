@@ -69,6 +69,7 @@ app.layout = dbc.Container([
      Output('age-gender-distribution', 'figure'),
      Output('events-by-year', 'figure'),
      Output('sunburst-chart', 'figure')],
+    #  Output('title-defences-chart', 'figure')],
     [Input('sport-dropdown', 'value')]
 )
 def update_sport(selected_sport):
@@ -112,7 +113,17 @@ def update_sport(selected_sport):
         color='Medal'
     )
 
+    # title_defences_chart_figure = px.bar(title_defences, x="Event", y="count", color="Year",
+    #                                      labels=dict(count="Titelförsvar"),
+    #                                      hover_data=dict(count=False, Event=True, Sport=False),
+    #                                      title="År med guldmedaljer i följd")
+    # title_defences_chart_figure.update_layout(xaxis={'categoryorder': 'total ascending'})
+
+    # return output_text, age_distribution_figure, medal_distribution_figure, age_gender_distribution_figure, \
+    #        events_by_year_figure, sunburst_chart_figure, title_defences_chart_figure  
     return output_text, age_distribution_figure, medal_distribution_figure, age_gender_distribution_figure, events_by_year_figure, sunburst_chart_figure
+
+    
 
 
 if __name__ == '__main__':
