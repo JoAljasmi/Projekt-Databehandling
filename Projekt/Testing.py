@@ -36,45 +36,33 @@ app.layout = dbc.Container([
         style={'width': '50%'}
     ),
 
-    # Dropdown menu for selecting sport (appears when Sport Statistic is selected)
+    # Dropdown menu for selecting sport
     dcc.Dropdown(
         id='sport-dropdown',
         options=sports_options,
-        value='Ice Hockey',
+        value=None,
         style={'width': '50%'}
     ),
 
     # Displayed content
     html.Div(id='output-container'),
 
-    dbc.Row([
-        dbc.Col([
-            # Age distribution in the sport
-            dcc.Graph(id='age-distribution', style={'display': 'none'}),
-        ], width=5),
-
-        # Medal distribution between the countries
-        dbc.Col([
-            dcc.Graph(id='medal-distribution', style={'display': 'none'}),
-        ], width=5),
-    ]),
-
-    # Distribution of age to gender
-    dbc.Row([
-        dbc.Col([
-            dcc.Graph(id='age-gender-distribution', style={'display': 'none'}),
-        ], width=5),
-
-        # Number of events in the sport
-        dbc.Col([
-            dcc.Graph(id='events-by-year', style={'display': 'none'}),
-        ], width=5),
-    ]),
-    dbc.Row([
-        # Graphing up a sunburst chart
-        dcc.Graph(id='sunburst-chart', style={'display': 'none'}),
-    ]),
+    # Age distribution in the sport
+    dcc.Graph(id='first-figure', style={'display': 'none'}),
+        
+    # Medal distribution between the countries
+    dcc.Graph(id='second-figure', style={'display': 'none'}),
+        
+    # Distribution of age to gender 
+    dcc.Graph(id='third-figure', style={'display': 'none'}),
+        
+    # Number of events in the sport
+    dcc.Graph(id='fourth-figure', style={'display': 'none'}),
+   
+    # Graphing up a sunburst chart or bar graph with consecutive wins
+    dcc.Graph(id='fifth-figure', style={'display': 'none'}),
 ])
+
 
 # Callback to update graphs based on selected statistic type and sport
 @app.callback(
@@ -116,23 +104,34 @@ def update_sport(statistic_type, selected_sport):
         events_by_year_figure = px.histogram(sport_df, x='Year', color='Year',
                                              title='Number of ' + selected_sport + ' Events by Year')
 
-        # Sunburst chart
+        # Sunburst chart showing the year, medal and which country won
         sunburst_chart_figure = px.sunburst(
             sport_df.dropna(subset=['Medal']),
             path=['Year', 'Medal', 'NOC'],
             title='Medal Distribution in ' + selected_sport + ' by Year and Country',
             color='Medal'
         )
+
+        # Outputting the graphs into the dashboard
         return [
             html.Div(f"Displaying data for {selected_sport} Statistic"),
-            dcc.Graph(figure=age_distribution_figure, id='age-distribution'),
-            dcc.Graph(figure=medal_distribution_figure, id='medal-distribution'),
-            dcc.Graph(figure=age_gender_distribution_figure, id='age-gender-distribution'),
-            dcc.Graph(figure=events_by_year_figure, id='events-by-year'),
-            dcc.Graph(figure=sunburst_chart_figure, id='sunburst-chart')
+            dcc.Graph(figure=age_distribution_figure, id='first-figure'),
+            dcc.Graph(figure=medal_distribution_figure, id='second-figure'),
+            dcc.Graph(figure=age_gender_distribution_figure, id='third-figure'),
+            dcc.Graph(figure=events_by_year_figure, id='fourth-figure'),
+            dcc.Graph(figure=sunburst_chart_figure, id='fifth-figure')
         ]
 
     else:
+        canada_gold = athlete_events_df.query("NOC=='CAN' & Medal =='Gold'")
+        events_by_year = canada_gold[["Event", "Year", "Sport", "Medal"]].groupby(["Event"], as_index=False).value_counts().sort_values(by=["Event", "Year"], ascending=[False, True])
+        title_defences = events_by_year[events_by_year['Event'].duplicated(keep=False)]
+        title_defences.loc[:,'difference'] = title_defences.groupby("Event", as_index=False)['Year'].diff()
+        title_defences.drop(title_defences[(title_defences['difference'] != 4)].index, inplace=True)
+        title_defences.drop(['count', "difference"], axis=1, inplace=True)
+        title_defences = title_defences.value_counts().reset_index().sort_values(by=["Event", "Year"], ascending=[True, True])
+
+        # Filtering for only Canadian athletes
         df_canada = athlete_events_df[athlete_events_df['NOC'] == 'CAN']
 
         # The Sports which Canadians have Most Medals
@@ -149,25 +148,24 @@ def update_sport(statistic_type, selected_sport):
         fig_age_canada = px.histogram(df_canada, x='Age',
                                       title='Histogram of Athlete Ages in Canada', labels={'Age': 'Age'}, color='Age')
 
-        # Set default values for figures when Country Statistic is selected
-        events_by_year_figure_canada = px.histogram(df_canada, x='Year', color='Year',
+        # Number of years that canada has won 
+        events_by_year_figure_canada = px.histogram(df_canada, x='Year',
                                              title='Number of Events by Year in Canada')
+        events_by_year_figure_canada.update_layout(bargap=0.2)
 
-        sunburst_chart_figure_canada = px.sunburst(df_canada.dropna(subset=['Medal']),
-                                            path=['Year', 'Medal', 'Sport'],
-                                            title='Medal Distribution for Canadaian athletes by Year and Sport',
-                                            color='Medal')
+        # Showing consecutive wins of the Candian teams
+        Consecutive_wins_graph = px.bar(title_defences, x="Event", y="count", color="Year", labels=dict(count="Title defence"), hover_data=dict(count=False, Event=True, Sport=False), title="Years of consecutive gold medals of the Canadian team")
+        Consecutive_wins_graph.update_layout(xaxis={'categoryorder':'total ascending'}) 
 
+        # Outputting the graphs into the dashboard
         return [
             html.Div("Displaying data for Country Statistic"),
-            dcc.Graph(figure=fig_sports_canada, id='age-distribution'),
-            dcc.Graph(figure=fig_year_canada, id='medal-distribution'),
-            dcc.Graph(figure=fig_age_canada, id='age-gender-distribution'),
-            dcc.Graph(figure=events_by_year_figure_canada, id='events-by-year'),
-            dcc.Graph(figure=sunburst_chart_figure_canada, id='sunburst-chart')
+            dcc.Graph(figure=fig_sports_canada, id='first-figure'),
+            dcc.Graph(figure=fig_year_canada, id='second-figure'),
+            dcc.Graph(figure=fig_age_canada, id='third-figure'),
+            dcc.Graph(figure=events_by_year_figure_canada, id='fourth-figure'),
+            dcc.Graph(figure=Consecutive_wins_graph, id='fifth-figure')
         ]
     
-
-
 if __name__ == '__main__':
     app.run(debug=True)
