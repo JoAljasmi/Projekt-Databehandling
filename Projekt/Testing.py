@@ -123,12 +123,17 @@ def update_sport(statistic_type, selected_sport):
         ]
 
     else:
+        #Filter for canadian gold and count how many by event
         canada_gold = athlete_events_df.query("NOC=='CAN' & Medal =='Gold'")
         events_by_year = canada_gold[["Event", "Year", "Sport", "Medal"]].groupby(["Event"], as_index=False).value_counts().sort_values(by=["Event", "Year"], ascending=[False, True])
+
+        #Drop all unique rows (non-consecutive wins) + calculate difference in years between wins
         title_defences = events_by_year[events_by_year['Event'].duplicated(keep=False)]
         title_defences.loc[:,'difference'] = title_defences.groupby("Event", as_index=False)['Year'].diff()
+        #Drop consecutive wins with more than 2 olympic games apart (!=4 years), drop unnecessary columns
         title_defences.drop(title_defences[(title_defences['difference'] != 4)].index, inplace=True)
         title_defences.drop(['count', "difference"], axis=1, inplace=True)
+        # count amount of consecutive wins & sort
         title_defences = title_defences.value_counts().reset_index().sort_values(by=["Event", "Year"], ascending=[True, True])
 
         # Filtering for only Canadian athletes
