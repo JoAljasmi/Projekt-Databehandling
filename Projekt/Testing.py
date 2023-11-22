@@ -133,15 +133,14 @@ def update_sport(statistic_type, selected_sport):
         ]
 
     else:
-        # Filter data for the selected country (assuming it's Canada)
         df_canada = athlete_events_df[athlete_events_df['NOC'] == 'CAN']
 
-        # Sports with Most Medals in Canada
+        # The Sports which Canadians have Most Medals
         sport_medals_canada = df_canada.groupby('Sport')['Medal'].count().sort_values(ascending=False).reset_index()
         fig_sports_canada = px.bar(sport_medals_canada, x='Sport', y='Medal',
                                    title='Sports with Most Medals in Canada', labels={'Medal': 'Number of Medals'})
 
-        # Number of Medals per Olympics in Canada
+        # Number of Medals per Olympics for Canadaian athletes
         medals_per_year_canada = df_canada.groupby('Year')['Medal'].count().reset_index()
         fig_year_canada = px.bar(medals_per_year_canada, x='Year', y='Medal',
                                  title='Number of Medals per Olympics in Canada', labels={'Medal': 'Number of Medals'}, color='Year')
@@ -156,7 +155,7 @@ def update_sport(statistic_type, selected_sport):
 
         sunburst_chart_figure_canada = px.sunburst(df_canada.dropna(subset=['Medal']),
                                             path=['Year', 'Medal', 'Sport'],
-                                            title='Medal Distribution in Canada by Year and Sport',
+                                            title='Medal Distribution for Canadaian athletes by Year and Sport',
                                             color='Medal')
 
         return [
