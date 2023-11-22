@@ -134,6 +134,68 @@ def update_sport(selected_sport):
 # fig5.show()
 
 
+# Uppgift 1 ) Antal medaljer per OS för Kanada. Kehua
+#medals_per_os = df_canada.groupby(['Year', 'Medal']).size().unstack(fill_value=0).reset_index()
+
+#fig = px.bar(
+#    medals_per_os,
+#   x='Year',
+#   y=['Gold', 'Silver', 'Bronze'],
+#   title='Antal medaljer per OS för Kanada',
+#   labels={'value': 'Antal medaljer', 'variable': 'Medaljer'},
+#   height=600,
+#   width=800,
+#   color_discrete_map={'Gold': 'gold', 'Silver': 'silver', 'Bronze': 'brown'} 
+#)
+#fig.show()
+
+# Uppgift 1 ) De sporter som Kanada fått flest medaljer i.
+
+#df_canada = merged_df[merged_df['Team'] == 'Canada']
+#canada_sport_medals = df_canada.groupby('Sport')['Medal'].count().sort_values(ascending=False).head(15).reset_index()
+
+#fig = px.bar(canada_sport_medals, 
+#             x='Sport', 
+#             y='Medal', 
+#             title='Antal medaljer per sport för Kanada i OS',
+#             labels={'Medal': 'Antal medaljer', 'Sport': 'Sport'},
+#             color='Medal',
+#)
+
+#fig.update_layout(xaxis_title='Sport', yaxis_title='Antal medaljer')
+#fig.show()
+
+# Uppgift 1 ) Histogram över åldrar för Kanadas OS-deltagare.
+#fig = px.histogram(df_canada, x='Age', nbins=20, 
+#                   title='Histogram över åldrar för Kanadas OS-deltagare',
+#                   labels={'Age': 'Ålder', 'count': 'Antal deltagare'},
+#                   opacity=0.7, color_discrete_sequence=['blue'])
+
+#fig.update_layout(xaxis_title='Ålder', yaxis_title='Antal deltagare', bargap=0.05)
+#fig.show()
+
+# Uppgift 2 ) Simmning: Åldersfördelning.
+#swimming_age = merged_df[merged_df['Sport'] == 'Swimming']['Age'].value_counts().head(30).reset_index()
+#swimming_age.columns = ['Ålder', 'Antal deltagare']
+
+#fig = px.bar(swimming_age, x='Ålder', y='Antal deltagare', 
+#             title='Åldersfördelning i simning',
+#             labels={'Ålder': 'Ålder', 'Antal deltagare': 'Antal deltagare'},
+#)
+#fig.update_layout(xaxis_title='Ålder', yaxis_title='Antal deltagare')
+#fig.show()
+
+# Uppgift 2 ) Simmning: Medaljfördelning mellan länder.
+#swimming_medal = merged_df[merged_df['Sport'] == 'Swimming'].groupby('region')['Medal'].count().sort_values(ascending=False).head(10).reset_index()
+#swimming_medal.columns = ['Land', 'Antal medaljer']
+
+#fig = px.bar(swimming_medal, x='Land', y='Antal medaljer',
+#             title='Medaljfördelning mellan länder i simning',
+#             labels={'Land': 'Land', 'Antal medaljer': 'Antal medaljer'},
+#)
+
+#fig.update_layout(xaxis_title='Land', yaxis_title='Antal medaljer')
+#fig.show()
 if __name__ == '__main__':
     app.run_server(debug=True)
     
