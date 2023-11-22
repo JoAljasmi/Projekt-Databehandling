@@ -159,7 +159,7 @@ def update_sport(statistic_type, selected_sport):
 
         # Outputting the graphs into the dashboard
         return [
-            html.Div("Displaying data for Country Statistic"),
+            html.Div("Displaying statistical information on the Canadian Olympic Teams."),
             dcc.Graph(figure=fig_sports_canada, id='first-figure'),
             dcc.Graph(figure=fig_year_canada, id='second-figure'),
             dcc.Graph(figure=fig_age_canada, id='third-figure'),
