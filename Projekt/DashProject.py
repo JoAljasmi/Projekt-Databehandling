@@ -40,7 +40,7 @@ app.layout = dbc.Container([
     dcc.Dropdown(
         id='sport-dropdown',
         options=sports_options,
-        value=None,
+        value='Judo',
         style={'width': '50%'}
     ),
 
