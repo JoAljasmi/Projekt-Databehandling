@@ -17,6 +17,7 @@ athlete_events_df['Name'] = athlete_events_df['Name'].apply(lambda x: hashlib.sh
 
 # Initialize the Dash app
 app = Dash(__name__, external_stylesheets=[dbc.themes.FLATLY])
+server = app.server
 
 # Unique sports for dropdown
 sports_options = [{"label": "Judo", "value": "Judo"}, {"label": "Ice Hockey", "value": "Ice Hockey"}, {"label": "Swimming", "value": "Swimming"}]
